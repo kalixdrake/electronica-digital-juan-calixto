@@ -3,18 +3,20 @@
 `ifdef BENCH
 module divisorsito_TB;
 
+    localparam N = 8;
+
     reg clk;
     reg rst;
     reg start;
-    reg [7:0] dividend_in;
-    reg [7:0] divisor_in;
+    reg [N-1:0] dividend_in;
+    reg [N-1:0] divisor_in;
 
     wire ready;
-    wire [7:0] quotient_out;
-    wire [7:0] remainder_out;
+    wire [N-1:0] quotient_out;
+    wire [N-1:0] remainder_out;
 
     // Instanciar DUT
-    divisorsito uut (
+    divisorsito #(.N(N)) uut (
         .clk(clk),
         .rst(rst),
         .start(start),

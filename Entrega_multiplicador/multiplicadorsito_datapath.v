@@ -15,7 +15,6 @@ module multiplicadorsito_datapath #(parameter N = 4)(
     output n_ZERO,
     output [2*N-1:0] result,
     
-    // Salidas para ver en GTKWave
     output [N-1:0] A_debug,
     output [N-1:0] Q_debug,
     output [N-1:0] M_debug,

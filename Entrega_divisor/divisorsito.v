@@ -1,14 +1,14 @@
 `timescale 1ns / 1ps
 
-module divisorsito (
+module divisorsito #(parameter N = 8)(
     input  wire clk,
     input  wire rst,
     input  wire start,
-    input  wire [7:0] dividend_in,
-    input  wire [7:0] divisor_in,
+    input  wire [N-1:0] dividend_in,
+    input  wire [N-1:0] divisor_in,
     output wire ready,
-    output wire [7:0] quotient_out,
-    output wire [7:0] remainder_out
+    output wire [N-1:0] quotient_out,
+    output wire [N-1:0] remainder_out
 );
 
 
@@ -36,7 +36,7 @@ module divisorsito (
         .DEC_n      (DEC_n)
     );
 
-    divisorsito_datapath datapath (
+    divisorsito_datapath #(.N(N)) datapath (
         .clk           (clk),
         .rst           (rst),
         .dividend_in   (dividend_in),

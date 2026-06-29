@@ -1,13 +1,13 @@
 `timescale 1ns / 1ps
 
-module divisorsito_datapath (
+module divisorsito_datapath #(parameter N = 8)(
     input  wire clk,
     input  wire rst,
     
-    input  wire [7:0] dividend_in,
-    input  wire [7:0] divisor_in,
-    output wire [7:0] Q_out,
-    output wire [7:0] A_out,
+    input  wire [N-1:0] dividend_in,
+    input  wire [N-1:0] divisor_in,
+    output wire [N-1:0] Q_out,
+    output wire [N-1:0] A_out,
     
     // Señales de control
     input  wire LOAD_M,
@@ -26,25 +26,25 @@ module divisorsito_datapath (
     output wire n_ZERO
 );
 
-    localparam N = 16;
+    localparam N_W = $clog2(N + 1);
     
-    // Registros
+
     reg signed [N:0]   M;
     reg        [N-1:0] Q;
     reg signed [N:0]   A;
-    reg        [3:0]   n;
+    reg        [N_W-1:0]   n;
     
-    // Lógica de la ALU
+
     wire signed [N:0] ALU_out;
     assign ALU_out = (ADD_SUB == 1'b0) ? (A + M) : (A - M);
     
-    // Lógica de shift
+
     wire signed [N:0] A_shifted;
     wire [N-1:0] Q_shifted;
-    assign A_shifted = {A[N-1:0], Q[N-1]}; // A se desplaza, mete MSB de Q
+    assign A_shifted = {A[N-1:0], Q[N-1]}; // A se desplaza, mete 1
     assign Q_shifted = {Q[N-2:0], 1'b0};   // Q se desplaza, mete 0
     
-    // Bloque COMPARE
+
     assign SIGN_A = A[N]; // Si el bit más significativo es 1, A es negativo
     assign n_ZERO = (n == 0);
     
