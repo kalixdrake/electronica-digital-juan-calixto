@@ -1,7 +1,7 @@
 TARGET=divisorsito
 TOP=divisorsito
 
-OBJS = divisorsito.v divisorsito_fsm.v divisorsito_datapath.v
+OBJS = divisorsito.v divisorsito_fsm.v divisorsito_datapath.v ../common/sumadorsito.v ../common/restadorsito.v ../common/muxsito.v ../common/decrementadorsito.v
 
 all: sim
 

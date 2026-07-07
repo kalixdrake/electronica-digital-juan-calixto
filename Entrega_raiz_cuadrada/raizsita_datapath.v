@@ -35,6 +35,28 @@ module raizsita_datapath #(parameter N = 8)(
     reg [N-1:0]    RF;
     reg [Q_W-1:0]  n;
     
+    // --- Cables para módulos combinacionales ---
+    
+    // Restador: A - RF
+    wire [N-1:0] A_sub_RF;
+    restadorsito #(.N(N)) U_SUB_A (.a(A), .b(RF), .diff(A_sub_RF));
+    
+    // Sumador para RF_next = (Q << 2) + 1
+    wire [N-1:0] Q_shifted_2;
+    wire [N-1:0] RF_next;
+    assign Q_shifted_2 = { {(N - Q_W - 2){1'b0}}, Q, 2'b0 };
+    sumadorsito #(.N(N)) U_SUM_RF (.a(Q_shifted_2), .b({{(N-1){1'b0}}, 1'b1}), .sum(RF_next));
+    
+    // Sumador para Q_inc = (Q << 1) + 1
+    wire [Q_W-1:0] Q_shifted_1;
+    wire [Q_W-1:0] Q_inc;
+    assign Q_shifted_1 = {Q[Q_W-2:0], 1'b0};
+    sumadorsito #(.N(Q_W)) U_SUM_Q (.a(Q_shifted_1), .b({{(Q_W-1){1'b0}}, 1'b1}), .sum(Q_inc));
+    
+    // Decrementador: n - 1
+    wire [Q_W-1:0] n_dec;
+    decrementadorsito #(.N(Q_W)) U_DEC (.n(n), .dec(n_dec));
+    
     always @(negedge clk or posedge rst) begin
         if (rst) begin
             D <= 0; A <= 0; Q <= 0; RF <= 0; n <= 0;
@@ -47,7 +69,7 @@ module raizsita_datapath #(parameter N = 8)(
             else if (SHIFT_AD)
                 A <= (A << 2) | (D >> (N-2)); // A:D se desplaza 2 izquierda
             else if (SUB_A)
-                A <= A - RF;
+                A <= A_sub_RF;
                 
             if (SHIFT_AD)
                 D <= D << 2;
@@ -55,19 +77,19 @@ module raizsita_datapath #(parameter N = 8)(
             if (CLEAR_RF)
                 RF <= 0;
             else if (CALC_RF)
-                RF <= (Q << 2) + 1; // RF = (Q << 2) + 1
+                RF <= RF_next;
                 
             if (CLEAR_Q)
                 Q <= 0;
             else if (INC_Q)
-                Q <= (Q << 1) + 1; // Q = (Q << 1) + 1
+                Q <= Q_inc;
             else if (SHIFT_Q)
                 Q <= Q << 1;       // Q = Q << 1
                 
             if (LOAD_n)
                 n <= Q_W;            // N/2 iteraciones para N bits
             else if (DEC_n)
-                n <= n - 1;
+                n <= n_dec;
         end
     end
     

@@ -1,7 +1,7 @@
 TARGET=multiplicadorsito
 TOP=multiplicadorsito
 
-OBJS = multiplicadorsito.v multiplicadorsito_fsm.v multiplicadorsito_datapath.v
+OBJS = multiplicadorsito.v multiplicadorsito_fsm.v multiplicadorsito_datapath.v ../common/sumadorsito.v ../common/muxsito.v ../common/decrementadorsito.v
 
 all: sim
 

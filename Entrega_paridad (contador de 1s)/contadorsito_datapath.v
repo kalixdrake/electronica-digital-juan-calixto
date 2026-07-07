@@ -25,6 +25,22 @@ module contadorsito_datapath #(parameter N = 8)(
     reg [N-1:0] A;
     reg [N_W-1:0] n;
     
+    // --- Módulos combinacionales ---
+    
+    // Sumador para A + 1 (incremento)
+    wire [N-1:0] A_inc;
+    sumadorsito #(.N(N)) U_SUM_A (
+        .a(A),
+        .b({{(N-1){1'b0}}, 1'b1}),  // b = 1
+        .sum(A_inc)
+    );
+    
+    // Decrementador: n - 1
+    wire [N_W-1:0] n_dec;
+    decrementadorsito #(.N(N_W)) U_DEC (
+        .n(n),
+        .dec(n_dec)
+    );
 
     always @(negedge clk or posedge rst) begin
         if (rst) begin
@@ -40,13 +56,13 @@ module contadorsito_datapath #(parameter N = 8)(
             if (CLEAR_A)
                 A <= 0;
             else if (INC_A)
-                A <= A + 1; // A = A + 1
+                A <= A_inc;
                 
 
             if (LOAD_n)
                 n <= N;
             else if (DEC_n)
-                n <= n - 1;
+                n <= n_dec;
         end
     end
     

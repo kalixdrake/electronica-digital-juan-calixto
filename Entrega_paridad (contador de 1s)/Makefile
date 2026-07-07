@@ -1,7 +1,7 @@
 TARGET=contadorsito
 TOP=contadorsito
 
-OBJS = contadorsito.v contadorsito_fsm.v contadorsito_datapath.v
+OBJS = contadorsito.v contadorsito_fsm.v contadorsito_datapath.v ../common/sumadorsito.v ../common/decrementadorsito.v
 
 all: sim
 

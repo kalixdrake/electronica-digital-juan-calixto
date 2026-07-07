@@ -35,15 +35,44 @@ module divisorsito_datapath #(parameter N = 8)(
     reg        [N_W-1:0]   n;
     
 
+    // Cables para la ALU modular: sumador + restador + multiplexor
+    wire signed [N:0] sum_out;
+    wire signed [N:0] sub_out;
     wire signed [N:0] ALU_out;
-    assign ALU_out = (ADD_SUB == 1'b0) ? (A + M) : (A - M);
-    
 
+    sumadorsito #(.N(N+1)) U_SUM (
+        .a(A),
+        .b(M),
+        .sum(sum_out)
+    );
+
+    restadorsito #(.N(N+1)) U_SUB (
+        .a(A),
+        .b(M),
+        .diff(sub_out)
+    );
+
+    // ADD_SUB=0 → suma (in1=sum_out), ADD_SUB=1 → resta (in1=sub_out)
+    muxsito #(.N(N+1)) U_MUX_ALU (
+        .in0(sub_out),
+        .in1(sum_out),
+        .sel(ADD_SUB),
+        .out(ALU_out)
+    );
+
+    // Cables para el shifter
     wire signed [N:0] A_shifted;
     wire [N-1:0] Q_shifted;
     assign A_shifted = {A[N-1:0], Q[N-1]}; // A se desplaza, mete 1
     assign Q_shifted = {Q[N-2:0], 1'b0};   // Q se desplaza, mete 0
     
+
+    // Cable para el decrementador
+    wire [N_W-1:0] n_dec;
+    decrementadorsito #(.N(N_W)) U_DEC (
+        .n(n),
+        .dec(n_dec)
+    );
 
     assign SIGN_A = A[N]; // Si el bit más significativo es 1, A es negativo
     assign n_ZERO = (n == 0);
@@ -76,7 +105,7 @@ module divisorsito_datapath #(parameter N = 8)(
             if (LOAD_n)
                 n <= N;
             else if (DEC_n)
-                n <= n - 1;
+                n <= n_dec;
         end
     end
     

@@ -1,7 +1,7 @@
 TARGET=raizsita
 TOP=raizsita
 
-OBJS = raizsita.v raizsita_fsm.v raizsita_datapath.v
+OBJS = raizsita.v raizsita_fsm.v raizsita_datapath.v ../common/restadorsito.v ../common/sumadorsito.v ../common/decrementadorsito.v
 
 all: sim
 

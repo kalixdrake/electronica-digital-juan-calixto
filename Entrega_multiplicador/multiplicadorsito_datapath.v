@@ -23,16 +23,30 @@ module multiplicadorsito_datapath #(parameter N = 4)(
 
 
     reg [N-1:0] M, Q, A, n;
-    wire [N-1:0] sum_out; // ALU 
-    wire [N-1:0] n_dec;   // decrementador
-    wire [N-1:0] A_input; // Multiplexor
+    wire [N-1:0] sum_out; // salida del sumador
+    wire [N-1:0] n_dec;   // salida del decrementador
+    wire [N-1:0] A_input; // salida del multiplexor
 
-    assign sum_out = A + M;
-    
-    assign n_dec = n - 1;
-    
-    // Si clear_A es 1, la entrada a A es 0. Si no, es la suma de la ALU.
-    assign A_input = clear_A ? {N{1'b0}} : sum_out;
+    // Instancia del sumador: A + M
+    sumadorsito #(.N(N)) U_SUM (
+        .a(A),
+        .b(M),
+        .sum(sum_out)
+    );
+
+    // Instancia del decrementador: n - 1
+    decrementadorsito #(.N(N)) U_DEC (
+        .n(n),
+        .dec(n_dec)
+    );
+
+    // Instancia del multiplexor: si clear_A=1 → 0, si no → sum_out
+    muxsito #(.N(N)) U_MUX (
+        .in0({N{1'b0}}),
+        .in1(sum_out),
+        .sel(clear_A),
+        .out(A_input)
+    );
 
     assign Q_0 = Q[0];
     assign n_ZERO = (n == 0) ? 1'b1 : 1'b0;
