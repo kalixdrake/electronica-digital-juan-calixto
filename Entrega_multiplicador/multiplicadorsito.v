@@ -1,4 +1,4 @@
-module multiplicadorsito #(parameter N = 4)(
+module multiplicadorsito #(parameter N = 16)(
     input clock,
     input reset,
     input start,

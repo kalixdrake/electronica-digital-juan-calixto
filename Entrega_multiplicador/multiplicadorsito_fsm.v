@@ -1,4 +1,4 @@
-module multiplicadorsito_fsm #(parameter N=4) (
+module multiplicadorsito_fsm (
     input clock,
     input reset,
     input start,
@@ -54,7 +54,10 @@ module multiplicadorsito_fsm #(parameter N=4) (
                             if (n_ZERO == 1'b1) next_state = END_STATE;
                             else next_state = CHECK_Q0;
                         end
-            END_STATE: if (!start) next_state = INIT;
+            END_STATE: begin
+                            if (!start) next_state = END_STATE;
+                            else next_state = INIT;
+                       end
         endcase
     end
 

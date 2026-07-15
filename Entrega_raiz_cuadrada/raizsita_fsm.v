@@ -75,8 +75,9 @@ module raizsita_fsm (
                 next_state = CHK_N;
             end
             END_ST: begin
-                next_state = IDLE;
-            end
+                        if (start) next_state = INIT;
+                        else next_state = END_ST;
+                    end
             default: next_state = IDLE;
         endcase
     end

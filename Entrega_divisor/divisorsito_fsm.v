@@ -47,32 +47,33 @@ module divisorsito_fsm (
     always @(*) begin
         next_state = state;
         case (state)
-            IDLE: begin
-                if (start) next_state = INIT;
-            end
-            INIT: begin
-                next_state = SHIFT;
-            end
-            SHIFT: begin
-                next_state = SUB;
-            end
-            SUB: begin
-                if (SIGN_A) next_state = RESTORE; 
-                else        next_state = SET_Q;
-            end
-            RESTORE: begin
-                next_state = CHECK;
-            end
-            SET_Q: begin
-                next_state = CHECK;
-            end
-            CHECK: begin
-                if (n_ZERO) next_state = END_ST;
-                else        next_state = SHIFT;
-            end
+            IDLE:   begin
+                        if (start) next_state = INIT;
+                    end
+            INIT:   begin
+                        next_state = SHIFT;
+                    end
+            SHIFT:  begin
+                        next_state = SUB;
+                    end
+            SUB:    begin
+                        if (SIGN_A) next_state = RESTORE; 
+                        else        next_state = SET_Q;
+                    end
+            RESTORE:begin
+                        next_state = CHECK;
+                    end
+            SET_Q:  begin
+                        next_state = CHECK;
+                    end
+            CHECK:  begin
+                        if (n_ZERO) next_state = END_ST;
+                        else        next_state = SHIFT;
+                    end
             END_ST: begin
-                next_state = IDLE;
-            end
+                        if (start) next_state = INIT;
+                        else next_state = END_ST;
+                    end
             default: next_state = IDLE;
         endcase
     end

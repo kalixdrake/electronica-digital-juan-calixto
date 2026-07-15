@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module contadorsito_datapath #(parameter N = 8)(
+module contadorsito_datapath #(parameter N = 16)(
     input  wire clk,
     input  wire rst,
     

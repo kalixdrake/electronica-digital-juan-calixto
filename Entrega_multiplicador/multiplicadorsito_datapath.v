@@ -1,4 +1,4 @@
-module multiplicadorsito_datapath #(parameter N = 4)(
+module multiplicadorsito_datapath #(parameter N = 16)(
     input clock,
     input reset,
     input [N-1:0] M_in,
